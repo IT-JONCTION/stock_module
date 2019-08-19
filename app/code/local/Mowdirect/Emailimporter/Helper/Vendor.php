@@ -1,5 +1,5 @@
 <?php
-require_once(Mage::getBaseDir('lib') . '/google-client-api/autoload.php');
+require_once(Mage::getBaseDir('lib').'/google-client-api/autoload.php');
 
 class Mowdirect_Emailimporter_Helper_Vendor extends Mage_Core_Helper_Abstract {
     
@@ -7,7 +7,7 @@ class Mowdirect_Emailimporter_Helper_Vendor extends Mage_Core_Helper_Abstract {
     public function check_cron_scheduled($vendor) {
 
         if (empty($vendor['batch_import_inventory_schedule'])) {
-            Mage::log("Stock importer (info):  skiped email import no cron schudeled for : " . $vendor['vendor_name']);
+            Mage::log("Stock importer (info):  skiped email import no cron schudeled for : ".$vendor['vendor_name']);
             return false;
         }
 
@@ -26,12 +26,12 @@ class Mowdirect_Emailimporter_Helper_Vendor extends Mage_Core_Helper_Abstract {
                 return true;
             }
             
-            Mage::log('Stock importer (info):  skiped email import cron schudeled time not reached for : ' . $vendor['vendor_name']);
+            Mage::log('Stock importer (info):  skiped email import cron schudeled time not reached for : '.$vendor['vendor_name']);
             return false;           
             
         } catch (exception $e) {          
-            Mage::log('Stock importer (error):  Invalid cron schudeled for : ' . $vendor['vendor_name'] );
-            Mage::log('Stock importer (error): ' . $e);
+            Mage::log('Stock importer (error):  Invalid cron schudeled for : '.$vendor['vendor_name']);
+            Mage::log('Stock importer (error): '.$e);
             return false;
         }
     }
@@ -42,15 +42,15 @@ class Mowdirect_Emailimporter_Helper_Vendor extends Mage_Core_Helper_Abstract {
         $vendor_refresh_token = $emailimporter_helper->get_vendor_value($vendor['vendor_id'], 'gmail_importer_refresh_token');
         
         if (empty($vendor_accesstoken)) {
-            Mage::log('Stock importer (info):  skiped email import no access token for :' . $vendor['vendor_name']);
+            Mage::log('Stock importer (info):  skiped email import no access token for :'.$vendor['vendor_name']);
             return false;
         }
 
-        Mage::log('Stock importer (info): Processing Email download attachment for : ' . $vendor['vendor_name']);
+        Mage::log('Stock importer (info): Processing Email download attachment for : '.$vendor['vendor_name']);
         $gmail_api = Mage::helper('emailimporter/GmailConnect');
         $gmail_api->set_config();
 
-        $auth = array('token' => json_decode($vendor_accesstoken, true),'refresh_token' => $vendor_refresh_token);
+        $auth = array('token' => json_decode($vendor_accesstoken, true), 'refresh_token' => $vendor_refresh_token);
         // gmail auth fails
         $is_auth = $gmail_api->authenticate($auth);
         if ($is_auth != true) {
@@ -77,7 +77,7 @@ class Mowdirect_Emailimporter_Helper_Vendor extends Mage_Core_Helper_Abstract {
 
         if (!$response['is_file_downloaded']) {
             $this->no_attachment_email($vendor);
-        }else{
+        } else {
             $this->file_downloaded($vendor, $response['file_path']);
         }
         
@@ -87,27 +87,27 @@ class Mowdirect_Emailimporter_Helper_Vendor extends Mage_Core_Helper_Abstract {
 
     }
     
-    public function file_downloaded($vendor, $file_path){
+    public function file_downloaded($vendor, $file_path) {
         $weekly_hit_count = Mage::helper('emailimporter')->get_vendor_value($vendor['vendor_id'], 'weekly_hit_count');
-        $update_weekly_hit_count = empty($weekly_hit_count)? 1 : (int) $weekly_hit_count + 1;
+        $update_weekly_hit_count = empty($weekly_hit_count) ? 1 : (int) $weekly_hit_count + 1;
         Mage::helper('emailimporter')->set_vendor_value($vendor['vendor_id'], 'weekly_hit_count', $update_weekly_hit_count);
-        Mage::log('Stock importer (info): file download path '. $file_path );
-        Mage::log('Stock importer (info): file download for : '. $vendor['vendor_name'] );
+        Mage::log('Stock importer (info): file download path '.$file_path);
+        Mage::log('Stock importer (info): file download for : '.$vendor['vendor_name']);
     }
     
-    public function handel_invalid_attachment($vendor){
+    public function handel_invalid_attachment($vendor) {
         Mage::log('Stock importer (error): Invalid Attachment');
         Mage::helper('emailimporter')->sendMailAction(array(
-            'subject' => $vendor['vendor_name'] . ' Stock Management: Invalid Attachment',
+            'subject' => $vendor['vendor_name'].' Stock Management: Invalid Attachment',
             'to_mail' => Mage::getStoreConfig('emailimporter/vendor_email/allowed_failures_email'),
-            'message' => $vendor['vendor_name'] . " there is no valid attachment"
+            'message' => $vendor['vendor_name']." there is no valid attachment"
         ));
     }
 
     public function alert_too_many_email($vendor) {
-        Mage::log('Stock importer (error): Too many email found for :' . $vendor['vendor_name']);
+        Mage::log('Stock importer (error): Too many email found for :'.$vendor['vendor_name']);
 
-        $message = "<td><h3>Dear Administrator</h3>,</br>For the Vendor " . $vendor['vendor_name'];
+        $message = "<td><h3>Dear Administrator</h3>,</br>For the Vendor ".$vendor['vendor_name'];
         $message .= " when we attempted to download stock, we found that there were more emails";
         $message .= "in the Gmail inbox that we expected. This suggests that the vendor is sending";
         $message .= "stock updates more frequently than is configured in their preferences within magento.";
@@ -115,7 +115,7 @@ class Mowdirect_Emailimporter_Helper_Vendor extends Mage_Core_Helper_Abstract {
         $message .= "cron schedule in Magento accordingly.</td>";
 
         Mage::helper('emailimporter')->sendMailAction(array(
-            'subject' => $vendor['vendor_name'] . ' Stock Management: Too many emails arrived in allotted time-frame',
+            'subject' => $vendor['vendor_name'].' Stock Management: Too many emails arrived in allotted time-frame',
             'to_mail' => $this->get_vendor_email($vendor),
             'message' => $message,
             'name' => $vendor['vendor_name']
@@ -124,18 +124,18 @@ class Mowdirect_Emailimporter_Helper_Vendor extends Mage_Core_Helper_Abstract {
 
     public function alert_gmail_auth_fail($vendor) {
 
-        Mage::log('Stock importer (error): email auth failed may be token is invalid for : '. $vendor['vendor_name']);
+        Mage::log('Stock importer (error): email auth failed may be token is invalid for : '.$vendor['vendor_name']);
 
         Mage::helper('emailimporter')->sendMailAction(array(
             'subject' => 'Stock Management: Canot connect to gmail',
             'to_mail' => $this->get_vendor_email($vendor),
-            'message' => '<td><p>Email auth field on gmail-api needs correct auth on dropship -> vendor for vendor name :' . $vendor['vendor_name'].'<td><p>',
+            'message' => '<td><p>Email auth field on gmail-api needs correct auth on dropship -> vendor for vendor name :'.$vendor['vendor_name'].'<td><p>',
             'name' => $vendor['vendor_name']
         ));
     }
 
     public function handel_email_miss($vendor) {
-        Mage::log('Stock importer (error): no inventory email found for : '. $vendor['vendor_name']);
+        Mage::log('Stock importer (error): no inventory email found for : '.$vendor['vendor_name']);
 
         $description = 'Cron successfully but no email has found';
         $title = 'Stock Management: missed cron without email';
@@ -149,27 +149,27 @@ class Mowdirect_Emailimporter_Helper_Vendor extends Mage_Core_Helper_Abstract {
         Mage::helper('emailimporter')->set_vendor_value($vendor['vendor_id'], 'cron_attachment_miss_count', $updated_mail_miss_count);
         
         $weekly_miss_count = Mage::helper('emailimporter')->get_vendor_value($vendor['vendor_id'], 'weekly_miss_count');
-        $update_weekly_miss_count = empty($weekly_miss_count)? 1 : (int) $weekly_miss_count + 1;
+        $update_weekly_miss_count = empty($weekly_miss_count) ? 1 : (int) $weekly_miss_count + 1;
         Mage::helper('emailimporter')->set_vendor_value($vendor['vendor_id'], 'weekly_miss_count', $update_weekly_miss_count);
     }
 
     public function alert_misscount_verndor($vendor) {
-        Mage::log('Stock importer (error): Exceeding miss email for : ' . $vendor['vendor_name']);
+        Mage::log('Stock importer (error): Exceeding miss email for : '.$vendor['vendor_name']);
         Mage::helper('emailimporter')->sendMailAction(array(
             'subject' => 'Stock Management: Exceeding miss email',
             'to_mail' => $this->get_vendor_email($vendor),
-            'message' => '<td><p>No email and csv Attachment found on youremail ' . $vendor['vendor_name'].'</td></p>',
+            'message' => '<td><p>No email and csv Attachment found on youremail '.$vendor['vendor_name'].'</td></p>',
             'name' => $vendor['vendor_name']
         ));
         Mage::helper('emailimporter')->set_vendor_value($vendor['vendor_id'], 'cron_attachment_miss_count', '1');
     }
 
     public function no_attachment_email($vendor) {
-        Mage::log('Stock importer (error): There is no attachment for vendor : ' . $vendor['vendor_name']);
+        Mage::log('Stock importer (error): There is no attachment for vendor : '.$vendor['vendor_name']);
         Mage::helper('emailimporter')->sendMailAction(array(
             'subject' => 'Stock Management: There is no Attachment found',
             'to_mail' => $this->get_vendor_email($vendor),
-            'message' => 'No valid csv Attachment found on email for : ' . $vendor['vendor_name'].'',
+            'message' => 'No valid csv Attachment found on email for : '.$vendor['vendor_name'].'',
             'name' => $vendor['vendor_name']
         ));
     }

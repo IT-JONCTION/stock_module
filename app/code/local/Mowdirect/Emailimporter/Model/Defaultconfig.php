@@ -9,7 +9,7 @@ class Mowdirect_Emailimporter_Model_Defaultconfig extends Mage_Core_Model_Config
             throw new Mage_Core_Exception('Enter value below 12 ');
         }
 
-        return parent::save();     //call original save method so whatever happened 
+        return parent::save(); //call original save method so whatever happened 
     }
 
 }
