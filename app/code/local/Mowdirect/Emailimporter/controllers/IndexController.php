@@ -4,7 +4,7 @@ use function GuzzleHttp\json_encode;
 
 class Mowdirect_Emailimporter_IndexController extends Mage_Core_Controller_Front_Action {
     
-    public function indexAction(){
+    public function indexAction() {
         // This section is used only to debug the cron functionality manually by url.
         // Uncomment only when testing.
         // var_dump(Mage::getModel('emailimporter/Observer')->handleEmailCron());
@@ -16,7 +16,7 @@ class Mowdirect_Emailimporter_IndexController extends Mage_Core_Controller_Front
         $gmail->set_config();
 
         if (empty($_GET['code'])) {
-            header("Location: " . $gmail->create_auth_url());
+            header("Location: ".$gmail->create_auth_url());
             die();
         }
 

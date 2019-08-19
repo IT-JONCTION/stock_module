@@ -21,7 +21,7 @@ class Mowdirect_Emailimporter_Model_Observer {
         Mage::log('Stock importer (info): cron ended ');
     }
     
-    public function handleWeeklyReportCron(){
+    public function handleWeeklyReportCron() {
         Mage::log('Stock importer (info):  weekly report cron started ');
         
         $global_email = Mage::getStoreConfig('emailimporter/vendor_email/allowed_failures_email');
@@ -35,7 +35,7 @@ class Mowdirect_Emailimporter_Model_Observer {
             $weekly_miss_count = Mage::helper('emailimporter')->get_vendor_value($vendor['vendor_id'], 'weekly_miss_count');
             
             $email_output .= '<tr>';
-            $email_output .= '<td class="action-content">'. $vendor['vendor_name'] . '</td>';
+            $email_output .= '<td class="action-content">'.$vendor['vendor_name'].'</td>';
             $email_output .= ' <td><p class="highlighted-text">'.$weekly_hit_count.'</p></td>';
             $email_output .= ' <td><p class="highlighted-text">'.$weekly_miss_count.'</p></td>';
             $email_output .= '</tr>';

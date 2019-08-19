@@ -3,7 +3,7 @@
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-require_once(Mage::getBaseDir('lib') . '/google-client-api/autoload.php');
+require_once(Mage::getBaseDir('lib').'/google-client-api/autoload.php');
 
 class Mowdirect_Emailimporter_Helper_GmailConnect extends Mage_Core_Helper_Abstract {
 
@@ -64,7 +64,7 @@ class Mowdirect_Emailimporter_Helper_GmailConnect extends Mage_Core_Helper_Abstr
     }
 
     public function create_auth_url() {
-        $this->client->setConfig( 'prompt' , 'consent');
+        $this->client->setConfig('prompt', 'consent');
         $this->client->setAccessType('offline');  
         return $this->client->createAuthUrl();
     }
@@ -96,7 +96,7 @@ class Mowdirect_Emailimporter_Helper_GmailConnect extends Mage_Core_Helper_Abstr
 
         $this->client->setAccessToken($this->token);
           
-        $this->refresh_token = empty($args['refresh_token'])?$args['refresh_token']:$this->client->getRefreshToken();
+        $this->refresh_token = empty($args['refresh_token']) ? $args['refresh_token'] : $this->client->getRefreshToken();
  
         if ($this->client->isAccessTokenExpired()) {
             
@@ -129,7 +129,7 @@ class Mowdirect_Emailimporter_Helper_GmailConnect extends Mage_Core_Helper_Abstr
     }
 
     public function download_csv_files_from_message($args = []) {
-		$result = array();
+        $result = array();
         $response = array(
             'email_found' => 0, 
             'is_file_downloaded' => false, 
@@ -153,14 +153,14 @@ class Mowdirect_Emailimporter_Helper_GmailConnect extends Mage_Core_Helper_Abstr
                 'me',
                 [
                     'maxResults' => $count,
-                    'q' => 'has:attachment subject:' . $args['subject']
+                    'q' => 'has:attachment subject:'.$args['subject']
                 ]
         );
 
         foreach ($messages as $data) {
 
             $message_id = $data->getId();
-            if((int)$hit_mail_count !== 0 && $response['is_file_downloaded'] !== false){
+            if ((int) $hit_mail_count !== 0 && $response['is_file_downloaded'] !== false) {
                 $this->deleteMessage($message_id);
             }
             $message = $service->users_messages->get('me', $message_id);
@@ -179,7 +179,7 @@ class Mowdirect_Emailimporter_Helper_GmailConnect extends Mage_Core_Helper_Abstr
             }
 
             $parts = $message->getPayload()->getParts();
-			$file_path = '';
+            $file_path = '';
 			
             foreach ($parts as $part) {
 
@@ -207,17 +207,17 @@ class Mowdirect_Emailimporter_Helper_GmailConnect extends Mage_Core_Helper_Abstr
                 if ('text/plain' == finfo_buffer($f, $csvdata, FILEINFO_MIME_TYPE)) {
                     $file_path = $download_path . '/' . $part->filename;
                     $file = fopen($file_path, "w+");
-					if ( !$file ) {
-						continue;
-					}  
+                    if ( !$file ) {
+                        continue;
+                    }  
                     
-					fwrite($file, $csvdata);
+                    fwrite($file, $csvdata);
                     fclose($file);
 
                     $this->deleteMessage($message_id);
                     $response['file_path'] = $file_path;
                     $response['is_file_downloaded'] = true;
-                }else{
+                } else{
                     $this->deleteMessage($message_id);
                     $response['invalid_attachment'] = true;
                 }
@@ -244,7 +244,7 @@ class Mowdirect_Emailimporter_Helper_GmailConnect extends Mage_Core_Helper_Abstr
 
             if (strpos($gmail_subject, $filter_keyword) === false) {
 
-                Mage::log('Stock importer (info): subject line failed to match' . $gmail_subject);
+                Mage::log('Stock importer (info): subject line failed to match'.$gmail_subject);
                 return false;
             }
             return $header->value;
