@@ -4,7 +4,7 @@ class Mowdirect_Emailimporter_Helper_Vendor extends Mage_Core_Helper_Abstract {
 
     public function get_vendors() {
         $vendors = Mage::getModel('udropship/vendor')->getCollection()->getData();
-        foreach ($vendors as $key => $vendor){
+        foreach ($vendors as $key => $vendor) {
             $custom_data = json_decode($vendor['custom_vars_combined'], true);
             $vendors[$key] = array_merge($vendor, $custom_data);
         }
