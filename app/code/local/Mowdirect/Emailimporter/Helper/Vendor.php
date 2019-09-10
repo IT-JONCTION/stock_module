@@ -5,8 +5,8 @@ class Mowdirect_Emailimporter_Helper_Vendor extends Mage_Core_Helper_Abstract {
     public function get_vendors() {
         $vendors = Mage::getModel('udropship/vendor')->getCollection()->getData();
         foreach ($vendors as $key => $vendor){
-           $custom_data = json_decode($vendor['custom_vars_combined'], true);
-           $vendors[$key] = array_merge($vendor, $custom_data);
+            $custom_data = json_decode($vendor['custom_vars_combined'], true);
+            $vendors[$key] = array_merge($vendor, $custom_data);
         }
         return $vendors;
     }
@@ -148,7 +148,7 @@ class Mowdirect_Emailimporter_Helper_Vendor extends Mage_Core_Helper_Abstract {
         if ($this->get_vendor_allowed_miss($vendor) < $updated_mail_miss_count) {
             $this->alert_misscount_verndor($vendor);
             $update_vendor_varien->setCronAttachmentMissCount('1');
-        }else{
+        } else {
             $update_vendor_varien->setCronAttachmentMissCount($updated_mail_miss_count);
         }
 
@@ -196,17 +196,17 @@ class Mowdirect_Emailimporter_Helper_Vendor extends Mage_Core_Helper_Abstract {
         return $allowed_miss;
     }
 
-    public function update_bluk_vendor($vendor_model, $save_vendor_arr){
+    public function update_bluk_vendor($vendor_model, $save_vendor_arr) {
         $items = $save_vendor_arr['items'];
 
-        foreach ($items as $vendor_arr){
-            if(empty($vendor_arr['vendor_id']) || count($vendor_arr) <= 1){
+        foreach ($items as $vendor_arr) {
+            if (empty($vendor_arr['vendor_id']) || count($vendor_arr) <= 1) {
                 continue;
             }
 
             $vendor_model->load($vendor_arr['vendor_id']);
 
-            foreach ($vendor_arr as $coloumn_name => $value){
+            foreach ($vendor_arr as $coloumn_name => $value) {
                 $vendor_model->setData($coloumn_name, $value);
             }
 
