@@ -11,6 +11,19 @@ class Mowdirect_Emailimporter_Helper_GmailConnect extends Mage_Core_Helper_Abstr
     private $download_path = '';
     private $refresh_token = '';
 
+    private function getDefaultStoreUrl($route) {
+        /** @var $url Mage_Core_Model_Url */
+        $url = Mage::getModel('core/url')
+            ->setStore(
+                Mage::app()
+                ->getWebsite(true)
+                ->getDefaultGroup()
+                ->getDefaultStoreId()
+            );
+
+        return $url->getUrl($route);
+    }
+
     public function set_config($args = []) {
 
         if (!empty($args['client_id'])) {
@@ -28,7 +41,7 @@ class Mowdirect_Emailimporter_Helper_GmailConnect extends Mage_Core_Helper_Abstr
         if (!empty($args['redirect_uri'])) {
             $redirectUri = $args['redirect_uri'];
         } else {
-            $redirectUri = Mage::app()->getStore()->getUrl('email_importer/index/gmailredirect');
+            $redirectUri = $this->getDefaultStoreUrl('email_importer/index/gmailredirect');
         }
 
         if (!empty($args['app_name'])) {
